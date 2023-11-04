@@ -1,2 +1,3 @@
-# physics-informed-VAE-for-local-circulation-of-Taiwan
-This is a supplementary repository of figures and code snippets for the research paper titled "Developing a physics-informed variational autoencoder (VAE) approach to construct a reduced-order model of the lee vortex in Taiwan."
+# Explainable-VAE-for-local-circulation-of-Taiwan
+This is a supplementary repository of figures and code snippets for the research paper "Developing an explainable variational autoencoder (VAE) approach to construct a reduced-order model of the lee vortex in Taiwan." In this paper, we proposed an explainable VAE framework that combines the high-resolution numerical simulations over the complex topography of Taiwan and the novel VAE generative model for constructing a reduced-order model of the local circulation. The reduced-order model is an efficient AI downscaling tool with physical interpretability, which significantly improves the trustworthiness in assessing the local weather under various climate change scenarios when applying the AI tools.
+
