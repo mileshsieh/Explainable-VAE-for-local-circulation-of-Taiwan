@@ -106,7 +106,7 @@ if __name__=='__main__':
     cbar_ws=plt.colorbar(strm.lines,cax=ax_cb_ws,extend='max')
     cbar_ws.set_label('Wind Speed (m/s)',fontsize=20)
 
-    plt.suptitle('Generated Local Circulation by Physics-informed VAE',fontsize=30)
+    plt.suptitle('Generated Local Circulation using VAE',fontsize=30)
     plt.annotate('(a)', xy=(0.04, 0.7), xytext=(0.035, 0.88),xycoords='figure fraction',fontsize=30)
     plt.annotate('(b)', xy=(0.68, 0.7), xytext=(0.435, 0.88),xycoords='figure fraction',fontsize=30)
     #plt.annotate('(c)', xy=(0.7, 0.9), xytext=(0.63, 0.9),xycoords='figure fraction',fontsize=25)
