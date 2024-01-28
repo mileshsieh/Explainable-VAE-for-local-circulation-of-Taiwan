@@ -49,7 +49,7 @@ if __name__=='__main__':
   print(mu.shape)
 
   caseList=['ish20100110s_chem','ish20070409s_chem','ish20111227s_chem','ish20161001s_chem','ish20101129s_chem','ish20110430s_chem']
-
+  idxList=[83,7,163,183,118,147]
   pltCfg={'input':['Input Training Data'],
           'output':['Output Reconstruction Data']
           }
