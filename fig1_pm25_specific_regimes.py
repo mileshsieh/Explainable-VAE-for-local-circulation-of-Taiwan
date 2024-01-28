@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 13 08:52:46 2023
-
-@author: miles
-"""
-
+#!/home/mileshsieh/anaconda3/bin/python
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import matplotlib.colors as mc
 import seaborn
 import matplotlib
-from windrose import WindroseAxes
 import matplotlib.cm as cm
 from matplotlib.ticker import FormatStrFormatter,FixedLocator,FixedFormatter
 matplotlib.rc('xtick',labelsize=20)
@@ -103,9 +96,9 @@ def wind_rose(rosedata, wind_dirs, ax=None,palette=None):
 if __name__=='__main__':
     cities={'Taipei':[121.5598,25.09108],'Kaohsiung':[120.311922,22.620856]}
     
-    df=pd.read_csv('./data/obs/noWx.obs.47918_wind.csv',header=0,usecols=[0,12,13],parse_dates=[0])
+    df=pd.read_csv('./data/obs/noWx.obs.47918_wind.2008to2019.csv',header=0,usecols=[0,4,5],parse_dates=[0])
     df['date']=df.apply(lambda ser: ser.yyyymmdd.strftime('%Y%m%d'),axis=1)
-    df=df[(df.yyyymmdd>='2008-01-01')&(df.yyyymmdd<='2019-12-31')]
+    #df=df[(df.yyyymmdd>='2008-01-01')&(df.yyyymmdd<='2019-12-31')]
     
     def getFlowRegimeData(df,wd,ws):
         return df[(df.wd925>=wd-15)&(df.wd925<=wd+15)&(df.ws925>=ws-1)&(df.ws925>=ws+1)]
