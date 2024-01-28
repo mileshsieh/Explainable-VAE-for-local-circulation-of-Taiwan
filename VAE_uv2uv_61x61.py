@@ -170,7 +170,7 @@ if __name__=='__main__':
   n_p=99
 
   #for training
-  epochs = 5
+  epochs = 200
   epo_print=1
   batch_size = 24
   lr = 0.001
