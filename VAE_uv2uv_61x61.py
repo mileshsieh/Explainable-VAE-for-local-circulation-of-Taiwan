@@ -1,3 +1,4 @@
+#!/home/mileshsieh/anaconda3/bin/python
 import torch
 import torch.nn as nn
 import torchvision
@@ -169,8 +170,8 @@ if __name__=='__main__':
   n_p=99
 
   #for training
-  epochs = 1000
-  epo_print=10
+  epochs = 5
+  epo_print=1
   batch_size = 24
   lr = 0.001
 
@@ -183,19 +184,25 @@ if __name__=='__main__':
   device = torch.device("cuda")
 
   #load data
-  X,topo,caseList=du.load_leevortex_data(du.ts,du.te,du.ys,du.ye,du.xs,du.xe,dataset,scaled=False,reshape=False,step=5)
-  print(X.shape)
-
+  caseList,X=du.load_dataset('training')
+  caseList_test,X_test=du.load_dataset('testing')
+  print(X.shape,X_test.shape)
+  
   #scale
   nt,ncase,nvar,ny,nx=X.shape
   thd=int(np.percentile(abs(X),n_p))
   sf='%s_norm%d'%(sf,thd)
   X=(X/thd).reshape(nt*ncase,nvar,ny,nx)
 
-# convert to tensor
+  # convert to tensor
   input_data=torch.from_numpy(X).float()
-  #  dataloader
+  # dataloader
   train_loader = DataLoader(dataset = input_data, batch_size = batch_size, shuffle = True)
+
+  #for testing dataset
+  _,ntest,_,_,_=X_test.shape
+  X_test=(X_test/thd).reshape(nt*ntest,nvar,ny,nx)
+  test_loader = DataLoader(dataset = torch.from_numpy(X_test).float(), batch_size = batch_size, shuffle = False)
 
   #model_vae = variationalAutoEncoder(num_input_channels,latent_dim,nn.Tanh,c_hid).to(device)
   model_vae = variationalAutoEncoder(num_input_channels,latent_dim,nn.Tanh).to(device)
@@ -204,14 +211,16 @@ if __name__=='__main__':
   scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,40], gamma=0.5)
 
   # Train
-  e_loss=[]
-  e_mse=[]
-  e_kld=[]
+  vae_loss=[]
+  vae_kld=[]
+  mse_train=[]
+  mse_test=[]
 
   for epoch in range(epochs):
     total_loss=0
     total_mse=0
     total_kld=0
+    model_vae.train()
     for data in train_loader:
       inputs = data.to(device) 
       model_vae.zero_grad()
@@ -228,14 +237,26 @@ if __name__=='__main__':
     total_mse /= len(train_loader.dataset)
     total_kld /= len(train_loader.dataset)
 
+    # testing mse
+    total_test_mse=0
+    model_vae.eval()
+    for data in test_loader:
+      inputs = data.to(device) 
+      recon, _, _ = model_vae(inputs)
+      mse = torch.nn.functional.mse_loss(recon,inputs)
+      total_test_mse+=float(mse)
+    total_test_mse /= len(test_loader.dataset)
+
+
     scheduler.step()
     if epoch % epo_print ==0:
-      print('[{}/{}] Loss:'.format(epoch+1, epochs), total_loss,total_mse,total_kld)
-      e_loss.append(total_loss)
-      e_mse.append(total_mse)
-      e_kld.append(total_kld)
-  np.save('data/VAE/epo_err.%s.npy'%sf,np.array(e_loss))
-  np.save('data/VAE/epo_mse.%s.npy'%sf,np.array(e_mse))
-  np.save('data/VAE/epo_kld.%s.npy'%sf,np.array(e_kld))
-  torch.save(model_vae, 'data/VAE/leevortex.%s.pth'%sf)
-
+      print('[{}/{}] Loss:'.format(epoch+1, epochs), total_loss,total_mse,total_test_mse,total_kld)
+      vae_loss.append(total_loss)
+      vae_kld.append(total_kld)
+      mse_train.append(total_mse)
+      mse_test.append(total_test_mse)
+  np.save('data/VAE/loss/vae_loss.%s.npy'%sf,np.array(vae_loss))
+  np.save('data/VAE/loss/vae_kld.%s.npy'%sf,np.array(vae_kld))
+  np.save('data/VAE/loss/mse_train.%s.npy'%sf,np.array(mse_train))
+  np.save('data/VAE/loss/mse_test.%s.npy'%sf,np.array(mse_test))
+  torch.save(model_vae, 'data/VAE/model/leevortex.%s.pth'%sf)

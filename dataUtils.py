@@ -34,20 +34,22 @@ def load_topo(ystart,yend,xstart,xend,step=0):
   return topo
 
 def load_leevortex_data(tstart,tend,ystart,yend,xstart,xend,dataset,scaled=True,reshape=True,step=0):
+  #setup data directory
+  dataDir='/home/mileshsieh/leeVortex/data'
   #load data
   caseList=getCaseList(dataset)
-  topo=np.load('data/topodata.npy')[ystart:yend,xstart:xend]
+  topo=np.load('%s/topodata.npy'%dataDir)[ystart:yend,xstart:xend]
   uall=[]
   vall=[]
   for icase in range(len(caseList)):
     print(caseList[icase])
     case=caseList[icase]
     if scaled:
-      u,u_scaler = remove_topo_wind(np.load('data/VAE/trainingDataset/u_data.%s.npy'%case)[tstart:tend,ystart:yend,xstart:xend],topo)
-      v,v_scaler = remove_topo_wind(np.load('data/VAE/trainingDataset/v_data.%s.npy'%case)[tstart:tend,ystart:yend,xstart:xend],topo)
+      u,u_scaler = remove_topo_wind(np.load('%s/u_data.%s.npy'%(dataDir,case))[tstart:tend,ystart:yend,xstart:xend],topo)
+      v,v_scaler = remove_topo_wind(np.load('%s/v_data.%s.npy'%(dataDir,case))[tstart:tend,ystart:yend,xstart:xend],topo)
     else:
-      u = remove_topo_wind(np.load('data/VAE/trainingDataset/u_data.%s.npy'%case)[tstart:tend,ystart:yend,xstart:xend],topo,scaled=False)
-      v = remove_topo_wind(np.load('data/VAE/trainingDataset/v_data.%s.npy'%case)[tstart:tend,ystart:yend,xstart:xend],topo,scaled=False)
+      u = remove_topo_wind(np.load('%s/u_data.%s.npy'%(dataDir,case))[tstart:tend,ystart:yend,xstart:xend],topo,scaled=False)
+      v = remove_topo_wind(np.load('%s/v_data.%s.npy'%(dataDir,case))[tstart:tend,ystart:yend,xstart:xend],topo,scaled=False)
     
     uall.append(u)
     vall.append(v)
@@ -74,6 +76,15 @@ def getSynoptic(caseList,features,dataset):
 
     return a.loc[caseList,features]
 
+def load_dataset(dataset):
+    caseList=getCaseList(dataset)
+    data=[]
+    for c in caseList:
+        data.append(np.load('data/VAE/input/%s_dataset.%s.npy'%(dataset,c)))
+    result=np.swapaxes(np.array(data),0,1)
+    return caseList,result
+
+
 #for lee vortex domain
 #(2,300,300)
 ts=6
@@ -89,23 +100,15 @@ ye=451
 xs=20
 xe=321
 
-#skip tt between 0,47
-# skip 10 samples
-skip_tt=[10, 44, 13, 28,  3, 35, 31, 25, 43, 14]
-#skip 16 samples (1/3 of 48 snapshots)
-#from numpy.random import default_rng
-#rng = default_rng()
-#numbers = rng.choice(48, size=16, replace=False)
-skip_tt=[33, 21,  1, 42,  0, 34, 38, 15, 40, 43, 32, 36, 29, 14, 46, 39]
-
-#step=5 is set in the VAE script
-
 if __name__=='__main__':
   #create_case_dir()
   #load data
-  X,topo,caseList=load_leevortex_data(ts,te,ys,ye,xs,xe,scaled=False,reshape=False,step=5)
-  print(X.shape)
-
+  for dataset in ['training','testing']:
+    X,topo,caseList=load_leevortex_data(ts,te,ys,ye,xs,xe,dataset,scaled=False,reshape=False,step=5)
+    print(dataset,X.shape)
+    for i,c in enumerate(caseList):
+      np.save('data/VAE/input/%s_dataset.%s.npy'%(dataset,c),X[:,i,:,:,:])
+  np.save('data/VAE/input/topo.npy',topo)
   #scale
   #nt,ncase,nvar,ny,nx=X.shape
   #scaler=StandardScaler()
