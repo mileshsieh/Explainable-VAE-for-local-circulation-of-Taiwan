@@ -13,7 +13,7 @@ from scipy.optimize import least_squares
 
 matplotlib.rc('xtick',labelsize=15)
 matplotlib.rc('ytick',labelsize=15)
-
+'''
 [a,b,x0,y0]=[0.0531645,0.89609678,10.06394176,-0.02435647]
 [a0,a1,wd0]=[2.506213,-0.99329623,110-1.24772201]
 
@@ -47,15 +47,11 @@ def plotWSWDAxes(ax,clr_WD,clr_WS):
     #plt.xticks([])
     #plt.yticks([])
     return
-
+'''
 
 if __name__=='__main__':
-  num_input_channels=2
   latent_dim=2
   beta=0.1
-  use_cuda = 1
-
-  batch_size = 48
   dataset='ctrl'
   thd=11
   seed=3
@@ -63,9 +59,9 @@ if __name__=='__main__':
   sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd)
 
   #load the latent variables
-  latent_mu_all=np.load('data/VAE/latent_mu_all.%s.npy'%sf)
-  print(latent_mu_all.shape)
-  nCase,nt,_=latent_mu_all.shape
+  latent_var=np.load('data/AE/latent/latent_var.%s.npy'%sf)
+  print(latent_var.shape)
+  nCase,nt,_=latent_var.shape
   #load the synoptic factors
   features=['wd925', 'ws925']
   caseList=du.getCaseList(dataset)
@@ -83,9 +79,9 @@ if __name__=='__main__':
   mu_y=np.linspace(-2,2,100)
   muxx,muyy=np.meshgrid(mu_x,mu_y)
   wd_mu=np.tile(wd,(48,1)).T
-  grid_wd=griddata(latent_mu_all.reshape((nCase*nt,-1)),wd_mu.ravel() , (muxx, muyy), method='linear')
+  grid_wd=griddata(latent_var.reshape((nCase*nt,-1)),wd_mu.ravel() , (muxx, muyy), method='linear')
   ws_mu=np.tile(ws,(48,1)).T
-  grid_ws=griddata(latent_mu_all.reshape((nCase*nt,-1)),ws_mu.ravel() , (muxx, muyy), method='linear')
+  grid_ws=griddata(latent_var.reshape((nCase*nt,-1)),ws_mu.ravel() , (muxx, muyy), method='linear')
 
   #fitting function form of ws
   def h_ws(theta, x, y):

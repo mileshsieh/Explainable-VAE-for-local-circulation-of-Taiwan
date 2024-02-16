@@ -38,7 +38,7 @@ if __name__=='__main__':
   sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd)
 
   #load the latent variables
-  latent_mu_all=np.load('data/VAE/latent_mu_all.%s.npy'%sf)
+  latent_mu_all=np.load('data/AE/latent/latent_var.%s.npy'%sf)
   print(latent_mu_all.shape)
   nCase,nt,_=latent_mu_all.shape
   #load the synoptic factors

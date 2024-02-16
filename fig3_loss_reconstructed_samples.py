@@ -34,61 +34,69 @@ if __name__=='__main__':
   num_input_channels=2
   latent_dim=2
   beta=0.1
-  use_cuda = 1
-
-  batch_size = 48
   dataset='ctrl'
   thd=11
-
   seed=3
-  #for write out
-  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd)
-
-  mu=np.load('data/VAE/latent_mu_all.%s.npy'%sf)
-  topo=du.load_topo(du.ys,du.ye,du.xs,du.xe,step=5)
-  print(mu.shape)
-
-  caseList=['ish20100110s_chem','ish20070409s_chem','ish20111227s_chem','ish20161001s_chem','ish20101129s_chem','ish20110430s_chem']
-  idxList=[83,7,163,183,118,147]
-  pltCfg={'input':['Input Training Data'],
-          'output':['Output Reconstruction Data']
+ 
+  suffix={'VAE':'vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd),
+          'CAE':'cae61x61_ldim%d_%s_t%dto%d_seed%d_norm%d'%(latent_dim,dataset,du.ts,du.te,seed,thd),
+          'PCA':'PCA.2pcs',
           }
+  #load data
+  caseList,X=du.load_dataset(dataset)
+  nt,ncase,nvar,ny,nx=X.shape
+  print(X.shape)
+  recon_cases=['ish20100110s_chem','ish20070409s_chem','ish20111227s_chem',\
+               'ish20161001s_chem','ish20101129s_chem','ish20110430s_chem']
+  #select 7th frame as the reconstruction snapshots
+  itt=6
+  data={}
+  for m in ['Input','VAE','CAE','PCA']:
+    data[m]=[]
 
-  tt=30
+  idx_cases=[np.where(caseList==c)[0][0] for c in recon_cases]
+  #get the indices of test dataset
+  testing_indices=np.load('./data/AE/input/testing_indices.npy')
+  idx_test_cases,idx_test_tt=np.divmod(testing_indices,nt)
+  for idx in idx_cases:
+    print(caseList[idx])
+    tmp=sorted(idx_test_tt[idx_test_cases==idx])
+    data['Input'].append(X[tmp[itt],idx,:,:,:])
+    print('get input data',idx,tmp[itt],X[tmp[itt],idx,:,:,:].shape)
+    for m in ['VAE','CAE','PCA']:
+        recon=np.load('./data/AE/reconstruction/recon.%s.%s.npy'%(caseList[idx],suffix[m]))
+        print('get %s recon data'%m,idx,tmp[itt],recon.shape)
+        data[m].append(recon[tmp[itt],:,:,:])
+
   step=5
   topo=du.load_topo(du.ys,du.ye,du.xs,du.xe,step=step)
 
   plt.close()
-  fig, axes = plt.subplots(ncols=6,nrows=2,constrained_layout=False,figsize=(20,12))
+  fig, axes = plt.subplots(ncols=6,nrows=4,constrained_layout=False,figsize=(20,12))
   irow=0
   title_list=['a','b','c','d','e','f']
-  for p_option in ['input','outout']:
+  for irow,m in enumerate(['Input','VAE','CAE','PCA']):
     ititle=0
-    for ax,case in zip(axes[irow,:],caseList):
-      print(case,tt)
+    for iax,ax in enumerate(axes[irow,:]):
+      print(m,caseList[idx_cases[iax]])
 
-      if p_option=='input':
-        u=np.load('data/VAE/trainingDataset/u_data.%s.npy'%case)[du.ts:du.te,du.ys:du.ye,du.xs:du.xe]
-        v=np.load('data/VAE/trainingDataset/v_data.%s.npy'%case)[du.ts:du.te,du.ys:du.ye,du.xs:du.xe]
-        varData=np.array([u[tt,::step,::step],v[tt,::step,::step]])
-        strm2=plotStreamLine(ax,topo,varData,title_list[ititle],'','')
+      if m=='input':
+        strm2=plotStreamLine(ax,topo,data[m][iax],title_list[ititle],'','')
         ititle=ititle+1
       else:
-        varData=np.load('data/VAE/reconstruction/pred.%s.VAE.%s.npy'%(case,sf))[tt,:,:,:]
-      
-        strm2=plotStreamLine(ax,topo,varData,'','','')
+        strm2=plotStreamLine(ax,topo,data[m][iax],'','','')
 
     irow=irow+1
   plt.tight_layout()
   #plt.suptitle(pltCfg[p_option][0],fontsize=50)
-  plt.text(0.06,0.35,'Input',fontsize=35,ha='center',transform=fig.transFigure)
-  plt.text(0.06,0.15,'Output',fontsize=35,ha='center',transform=fig.transFigure)
+  #plt.text(0.06,0.35,'Input',fontsize=35,ha='center',transform=fig.transFigure)
+  #plt.text(0.06,0.15,'Output',fontsize=35,ha='center',transform=fig.transFigure)
 
-  fig.subplots_adjust(right=0.88,left=0.12,top=0.5)
-  ax_cb = fig.add_axes([0.9, 0.03, 0.03, 0.45])
+  fig.subplots_adjust(right=0.88,left=0.12)
+  ax_cb = fig.add_axes([0.9, 0.03, 0.03, 0.8])
   cbar=plt.colorbar(strm2.lines,cax=ax_cb,extend='max')
   cbar.set_label('Wind Speed (m/s)',fontsize=30)
-
+  '''
   err=np.load('data/VAE/epo_err.%s.npy'%sf)
   ax_err=fig.add_axes([0.2,0.62,0.6,0.3])
   ax_err.plot(np.arange(err.shape[0])*10,err,lw=4)
@@ -104,4 +112,4 @@ if __name__=='__main__':
   plt.annotate('(a)', xy=(0.15, 0.41), xytext=(0.05, 0.95),xycoords='figure fraction',fontsize=40)
   plt.annotate('(b)', xy=(0.25, 0.51), xytext=(0.05, 0.5),xycoords='figure fraction',fontsize=40)
   plt.savefig('./figures/fig3_loss_recon_comp.png',dpi=400)
-
+  '''

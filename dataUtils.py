@@ -23,7 +23,7 @@ def create_case_dir():
 def getCaseList(dataset):
   #fList=sorted(glob.glob('./data/u_data.ish*.npy'))
   #caseList=[a.split('.')[-2] for a in fList]
-  a=pd.read_csv('data/VAE/synoptic.%s.csv'%dataset,header=0,parse_dates=[0])
+  a=pd.read_csv('data/AE/synoptic.%s.csv'%dataset,header=0,parse_dates=[0])
   caseList=a.caseName.values
   return caseList
 
@@ -69,7 +69,7 @@ def load_leevortex_data(tstart,tend,ystart,yend,xstart,xend,dataset,scaled=True,
 
 def getSynoptic(caseList,features,dataset):
     #parser = lambda date: pd.datetime.strptime(date, '%Y-%m-%d')
-    a=pd.read_csv('data/VAE/synoptic.%s.csv'%dataset,header=0,parse_dates=[0])
+    a=pd.read_csv('data/AE/synoptic.%s.csv'%dataset,header=0,parse_dates=[0])
     #a=pd.read_csv('inversion_SE.csv',header=0,parse_dates=[0,],date_parser=parser)
     #a['case']=a.apply(lambda ser:'ish%ds_chem'%ser.date,axis=1)
     a.set_index('caseName',inplace=True)
@@ -80,7 +80,7 @@ def load_dataset(dataset):
     caseList=getCaseList(dataset)
     data=[]
     for c in caseList:
-        data.append(np.load('data/VAE/input/%s_dataset.%s.npy'%(dataset,c)))
+        data.append(np.load('data/AE/input/input.%s.npy'%(c)))
     result=np.swapaxes(np.array(data),0,1)
     return caseList,result
 
@@ -103,12 +103,9 @@ xe=321
 if __name__=='__main__':
   #create_case_dir()
   #load data
-  for dataset in ['training','testing']:
-    X,topo,caseList=load_leevortex_data(ts,te,ys,ye,xs,xe,dataset,scaled=False,reshape=False,step=5)
-    print(dataset,X.shape)
-    for i,c in enumerate(caseList):
-      np.save('data/VAE/input/%s_dataset.%s.npy'%(dataset,c),X[:,i,:,:,:])
-  np.save('data/VAE/input/topo.npy',topo)
+  #load data
+  X,topo,caseList=load_leevortex_data(ts,te,ys,ye,xs,xe,dataset,scaled=False,reshape=False,step=5)
+  print(X.shape)
   #scale
   #nt,ncase,nvar,ny,nx=X.shape
   #scaler=StandardScaler()
