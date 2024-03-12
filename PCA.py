@@ -33,7 +33,7 @@ def plotStreamLine(ax,topo,vardata,title,rtitle,ltitle,step=5):
     return strm
 
 if __name__=='__main__':
-  thd=11
+  thd=11.71
   #load data
   dataset='ctrl'
   #load data
@@ -64,7 +64,7 @@ if __name__=='__main__':
   print('nsample=%d nvar=%d ny=%d nx=%d'%(nsample,nvar,ny,nx))
 
   #pca
-  npc=3
+  npc=2
   pca=PCA(n_components=npc).fit(X_input)
   print('PCA: npc=%d'%npc)
 
@@ -102,7 +102,7 @@ if __name__=='__main__':
   for icase,case in enumerate(caseList):
     np.save('./data/AE/reconstruction/recon.%s.PCA.%dpcs.npy'%(case,npc),recon[:,icase,:,:])
 
-  coef=coef.reshape(nt,ncase,npc)
+  coef=np.swapaxes(coef.reshape(nt,ncase,npc),0,1)
   print(coef.shape)
   np.save('./data/AE/PCA/coef.%d.npy'%npc,coef)
 
@@ -121,8 +121,8 @@ if __name__=='__main__':
     plt.close()
     plt.figure(figsize=(16,16))
     for tt in range(nt):
-      plt.scatter(coef[tt,train_cases[tt],0],coef[tt,train_cases[tt],1],c=var[train_cases[tt]],s=50,marker='o',vmin=pltCfg[lbl][2],vmax=pltCfg[lbl][3],cmap=pltCfg[lbl][4])
-      plt.scatter(coef[tt,test_cases[tt],0],coef[tt,test_cases[tt],1],c=var[test_cases[tt]],s=50,marker='x',vmin=pltCfg[lbl][2],vmax=pltCfg[lbl][3],cmap=pltCfg[lbl][4])
+      plt.scatter(coef[train_cases[tt],tt,0],coef[train_cases[tt],tt,1],c=var[train_cases[tt]],s=50,marker='o',vmin=pltCfg[lbl][2],vmax=pltCfg[lbl][3],cmap=pltCfg[lbl][4])
+      plt.scatter(coef[test_cases[tt],tt,0],coef[test_cases[tt],tt,1],c=var[test_cases[tt]],s=50,marker='x',vmin=pltCfg[lbl][2],vmax=pltCfg[lbl][3],cmap=pltCfg[lbl][4])
     cb=plt.colorbar()
     cb.set_label(pltCfg[lbl][1],fontsize=35)
     plt.grid(True)

@@ -18,18 +18,18 @@ matplotlib.rc('ytick',labelsize=25)
 if __name__=='__main__':
   num_input_channels=2
   latent_dim=2
-  beta=0.1
+  beta=0.01
   #for activation function
   dataset='ctrl'
-  thd=11
+  thd=11.71
 
   seed=3
   #for write out
-  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd)
+  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd))
   device = torch.device('cpu')
 
   # Load model
-  model_ae = torch.load('data/AE/model/leevortex.%s.pth'%sf,map_location=torch.device('cpu'))
+  model_ae = torch.load('data/VAE/model/leevortex.%s.pth'%sf,map_location=torch.device('cpu'))
   model_ae.eval()
 
   #load data
@@ -41,8 +41,8 @@ if __name__=='__main__':
   X=(X/thd)
 
   #get the indices of test dataset
-  testing_indices=np.load('./data/AE/input/testing_indices.npy')
-  training_indices=np.load('./data/AE/input/training_indices.npy')
+  testing_indices=np.load('./data/VAE/input/testing_indices.npy')
+  training_indices=np.load('./data/VAE/input/training_indices.npy')
   
   idx_test_cases,idx_test_tt=np.divmod(testing_indices,nt)
   idx_train_cases,idx_train_tt=np.divmod(training_indices,nt)
@@ -65,7 +65,7 @@ if __name__=='__main__':
       outputs,mu,logvar = model_ae(inputs.to(device))
     output_X = outputs.detach().cpu().numpy()
     output_X=output_X*thd
-    np.save('data/AE/reconstruction/recon.%s.%s.npy'%(case,sf),output_X)
+    np.save('data/VAE/reconstruction/recon.%s.%s.npy'%(case,sf),output_X)
 
     latent_mu=mu.detach().cpu().numpy()
     latent_mu_all.append(latent_mu)
@@ -74,7 +74,7 @@ if __name__=='__main__':
    
   latent_mu_all=np.array(latent_mu_all)
   print(latent_mu_all.shape)
-  np.save('data/AE/latent/latent_var.%s.npy'%sf,latent_mu_all)
+  np.save('data/VAE/latent/latent_var.%s.npy'%sf,latent_mu_all)
   
   #get synoptic factors
   features=['wd925', 'ws925']

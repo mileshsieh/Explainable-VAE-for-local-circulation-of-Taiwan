@@ -209,8 +209,8 @@ if __name__=='__main__':
         plt.contour(lonTW,latTW,topo,levels=[0.01,],colors='k',linewidths=2)
         plt.contourf(lonTW,latTW,topo_m,cmap='Greys')
         for c in cities:
-            plt.plot(cities[c][0],cities[c][1],marker='*',markersize=20,mfc='yellow',mec='k')
-            plt.text(cities[c][0],cities[c][1]-0.3,c,fontsize=20,ha='center')
+            plt.plot(cities[c][0],cities[c][1],marker='*',markersize=30,mfc='yellow',mec='k')
+            plt.text(cities[c][0],cities[c][1]-0.3,c,fontsize=25,fontweight='bold',ha='center')
         cs=plt.scatter(lon,lat,c=enh_idx,s=50,vmax=0.8,vmin=0.1,cmap='jet')
         plt.xlim(119.8,122.2)
         plt.ylim(21.7,25.5)
@@ -228,4 +228,4 @@ if __name__=='__main__':
     plt.annotate('(c)', xy=(0.7, 0.9), xytext=(0.7, 0.93),xycoords='figure fraction',fontsize=30)
  
     
-    plt.savefig('./figures/fig1_WD125_WD150_enhancement_index.png',dpi=400)
+    plt.savefig('./figures/fig1_WD125_WD150_enhancement_index.png',dpi=300)

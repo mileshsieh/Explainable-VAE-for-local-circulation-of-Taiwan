@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from VAE_uv2uv_61x61 import variationalAutoEncoder,Encoder,Decoder,Reshape
+from train_VAE_uv2uv_61x61 import variationalAutoEncoder,Encoder,Decoder,Reshape
 import dataUtils as du
 from scipy.optimize import fsolve
 import matplotlib
@@ -15,8 +15,8 @@ import matplotlib.ticker as ticker
 matplotlib.rc('xtick',labelsize=25)
 matplotlib.rc('ytick',labelsize=25)
 
-[a,b,x0,y0]=[0.0531645,0.89609678,10.06394176,-0.02435647]
-[a0,a1,wd0]=[2.506213,-0.99329623,108.75227799]
+[a,b,x0,y0]=[0.08303117,0.95491014,8.25855574,0.11692898]
+[a0,a1,wd0]=[2.93885019,-1.29016647,103.75438081]
 
 def ws_h(x, y):
     return a * (x - x0)**2 + b * (y - y0)**2
@@ -71,20 +71,20 @@ def plotStreamLine(ax,topo,vardata,title,rtitle,ltitle):
 if __name__=='__main__':
   num_input_channels=2
   latent_dim=2
-  beta=0.1
+  beta=0.01
   use_cuda = 1
 
   batch_size = 48
   dataset='ctrl'
-  thd=11
+  thd=11.71
   seed=3
   #for write out
-  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd)
+  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd))
 
   device = torch.device("cuda:0")
 
   # Load model
-  model_ae = torch.load('data/VAE/leevortex.%s.pth'%sf,map_location=torch.device('cuda:0'))
+  model_ae = torch.load('data/VAE/model/leevortex.%s.pth'%sf,map_location=torch.device('cuda:0'))
   model_ae.eval()
 
   #flow structure
@@ -97,4 +97,4 @@ if __name__=='__main__':
     print(flow,x_sample,y_sample)
     vardata=model_ae.decode(torch.Tensor([x_sample,y_sample]).to(device)).detach().cpu().numpy()
     vardata=vardata[0,:,:,:]*thd
-    np.save('data/VAE/flow_WD%.2f_WS%.2f.npy'%(wd_input,ws_input),vardata)
+    np.save('data/VAE/generation/flow_WD%.2f_WS%.2f.npy'%(wd_input,ws_input),vardata)

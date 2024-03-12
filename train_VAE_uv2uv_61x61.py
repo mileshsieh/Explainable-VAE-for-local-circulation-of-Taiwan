@@ -158,14 +158,14 @@ class variationalAutoEncoder(nn.Module):
     
 def loss_fn(recon_x, x, mu, logvar, beta):
     MSE = torch.nn.functional.mse_loss(recon_x,x)
-    KLD = -0.05 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
+    KLD = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
 
     return MSE + KLD*beta , MSE, KLD
 
 if __name__=='__main__':
   num_input_channels=2
   latent_dim=3
-  beta=0.1
+  beta=0.01
   #for normalized
   n_p=99
 
@@ -189,8 +189,9 @@ if __name__=='__main__':
   
   #scale
   nt,ncase,nvar,ny,nx=X.shape
-  thd=int(np.percentile(abs(X),n_p))
-  sf='%s_norm%d'%(sf,thd)
+  thd=np.percentile(abs(X),n_p)
+  sf='%s_norm%d'%(sf,int(thd))
+  print('threshold=%.2f model name:%s'%(thd,sf))
   X=(X/thd).reshape(nt*ncase,nvar,ny,nx)
 
   #split dataset
@@ -200,8 +201,8 @@ if __name__=='__main__':
   X_test=X[indices[:test_size]]
   X_train=X[indices[test_size:]]
   #save indices for validation, CAE trainging, and PCA
-  np.save('./data/AE/input/testing_indices.npy',indices[:test_size])
-  np.save('./data/AE/input/training_indices.npy',indices[test_size:])
+  np.save('./data/VAE/input/testing_indices.npy',indices[:test_size])
+  np.save('./data/VAE/input/training_indices.npy',indices[test_size:])
 
   print(X_train.shape,X_test.shape)
   # dataloader
@@ -258,8 +259,8 @@ if __name__=='__main__':
       vae_kld.append(total_kld)
       mse_train.append(total_mse)
       mse_test.append(total_test_mse)
-  np.save('data/AE/loss/vae_loss.%s.npy'%sf,np.array(vae_loss))
-  np.save('data/AE/loss/vae_kld.%s.npy'%sf,np.array(vae_kld))
-  np.save('data/AE/loss/mse_train.%s.npy'%sf,np.array(mse_train))
-  np.save('data/AE/loss/mse_test.%s.npy'%sf,np.array(mse_test))
-  torch.save(model_vae, 'data/AE/model/leevortex.%s.pth'%sf)
+  np.save('data/VAE/loss/vae_loss.%s.npy'%sf,np.array(vae_loss))
+  np.save('data/VAE/loss/vae_kld.%s.npy'%sf,np.array(vae_kld))
+  np.save('data/VAE/loss/mse_train.%s.npy'%sf,np.array(mse_train))
+  np.save('data/VAE/loss/mse_test.%s.npy'%sf,np.array(mse_test))
+  torch.save(model_vae, 'data/VAE/model/leevortex.%s.pth'%sf)

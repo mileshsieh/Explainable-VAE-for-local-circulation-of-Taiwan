@@ -13,53 +13,18 @@ from scipy.optimize import least_squares
 
 matplotlib.rc('xtick',labelsize=15)
 matplotlib.rc('ytick',labelsize=15)
-'''
-[a,b,x0,y0]=[0.0531645,0.89609678,10.06394176,-0.02435647]
-[a0,a1,wd0]=[2.506213,-0.99329623,110-1.24772201]
-
-def ws_h(x, y):
-    return a * (x - x0)**2 + b * (y - y0)**2
-
-def wd_h(x, y):
-    #return theta[0]*(x-theta[2])**2 - theta[1]*y
-    return a1*np.arctan(y/(x-a0))/np.pi*180+wd0
-
-def wind2xy(wd,ws):
-    def equations(vars):
-        x, y = vars
-        alpha=np.tan((wd-wd0)*np.pi/180/a1)
-        eq1 = x-a0-y/alpha
-        eq2 = a*(x-x0)**2+b*(y-y0)**2-ws
-        return [eq1, eq2]
-
-    x, y =  fsolve(equations, (2.1, 0))
-    return x,y
-
-def plotWSWDAxes(ax,clr_WD,clr_WS):
-    mu_x=np.linspace(-4,2,100)
-    mu_y=np.linspace(-3,3,100)
-    grid_x,grid_y=np.meshgrid(mu_x,mu_y)
-    c_wd=ax.contour(grid_x,grid_y,wd_h(grid_x,grid_y),colors=[clr_WD])
-    ax.clabel(c_wd, levels=[40,80,140], inline=True, fmt='$WD=%.0f\degree$', fontsize=30)
-
-    c_ws=ax.contour(grid_x,grid_y,ws_h(grid_x,grid_y),colors=[clr_WS])
-    ax.clabel(c_ws, levels=[6,10,12], inline=True, fmt='WS=%.1f m/s', fontsize=30)
-    #plt.xticks([])
-    #plt.yticks([])
-    return
-'''
 
 if __name__=='__main__':
   latent_dim=2
-  beta=0.1
+  beta=0.01
   dataset='ctrl'
-  thd=11
+  thd=11.71
   seed=3
   #for write out
-  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,thd)
+  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd))
 
   #load the latent variables
-  latent_var=np.load('data/AE/latent/latent_var.%s.npy'%sf)
+  latent_var=np.load('data/VAE/latent/latent_var.%s.npy'%sf)
   print(latent_var.shape)
   nCase,nt,_=latent_var.shape
   #load the synoptic factors
@@ -111,7 +76,7 @@ if __name__=='__main__':
   #initial guess of parameters of h_wd
   a = 1.0
   b = 1.0
-  x0 = 3.0
+  x0 = 2.0
   theta0 = [a,b,x0]
   res_wd = least_squares(fun_wd, theta0)  
   wd_fitting=h_wd(res_wd.x, xx, yy)
@@ -130,7 +95,7 @@ if __name__=='__main__':
   ax1.set_yticks([])
   cb=plt.colorbar(c1)
   cb.set_label('Wind Direction (deg)',fontsize=15)
-  c_wd=ax1.contour(xx,yy,wd_fitting+110,colors=['lightcyan'])
+  c_wd=ax1.contour(xx,yy,wd_fitting,colors=['lightcyan'])
   ax1.clabel(c_wd, c_wd.levels, inline=True, fmt='$WD=%.0f\degree$', fontsize=10)
 
   ax2=plt.subplot(122)
