@@ -164,7 +164,7 @@ def loss_fn(recon_x, x, mu, logvar, beta):
 
 if __name__=='__main__':
   num_input_channels=2
-  latent_dim=3
+  latent_dim=2
   beta=0.01
   #for normalized
   n_p=99
