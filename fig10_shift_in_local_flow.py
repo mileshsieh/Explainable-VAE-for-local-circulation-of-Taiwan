@@ -170,5 +170,5 @@ if __name__=='__main__':
   plt.annotate('(b)', xy=(0.42, 0.95), xytext=(0.42, 0.95),xycoords='figure fraction',fontsize=15)
   plt.annotate('(c)', xy=(0.68, 0.95), xytext=(0.68, 0.95),xycoords='figure fraction',fontsize=15)
 
-  plt.savefig('./figures/fig10_local_circulation_shift.png',dpi=300)
+  plt.savefig('./figures/fig10_local_circulation_shift.jpg',format='jpg',dpi=300)
 

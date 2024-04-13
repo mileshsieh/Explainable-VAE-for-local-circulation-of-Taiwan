@@ -80,5 +80,5 @@ if __name__=='__main__':
   plt.suptitle('Latent Space Color-coded by Synoptic Flow Regimes',fontsize=25)
   plt.annotate('(a)', xy=(0.05, 0.91), xytext=(0.05, 0.87),xycoords='figure fraction',fontsize=20)
   plt.annotate('(b)', xy=(0.05, 0.91), xytext=(0.49, 0.87),xycoords='figure fraction',fontsize=20)
-  plt.savefig('figures/fig7_physical_latent_space.png',dpi=300)
+  plt.savefig('figures/fig7_physical_latent_space.jpg',format='jpg',dpi=300)
 

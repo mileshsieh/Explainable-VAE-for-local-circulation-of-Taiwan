@@ -132,5 +132,5 @@ if __name__=='__main__':
   pattern=pattern*thd 
   print(pattern.shape)
   ax=plotPatternPhase(xx,yy,pattern,cnt,'Generated Local Circulation')
-  plt.savefig('figures/fig6_generated_local_circulation.png',dpi=300)
+  plt.savefig('figures/fig6_generated_local_circulation.jpg',format='jpg',dpi=300)
 

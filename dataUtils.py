@@ -85,27 +85,24 @@ def load_dataset(dataset):
     return caseList,result
 
 
-#for lee vortex domain
-#(2,300,300)
-ts=6
-te=54
-ys=150
-ye=450
-xs=20
-xe=320
-step=0
-#cut (2,301,301) and downsampling into (2,61,61) by step=5
-ys=150
+#cut (2,316,316) and downsampling into (2,64,64) by step=5
+ys=135
 ye=451
 xs=20
-xe=321
+xe=336
+ts=6
+te=54
 
 if __name__=='__main__':
   #create_case_dir()
   #load data
-  #load data
+  dataset='ctrl'
   X,topo,caseList=load_leevortex_data(ts,te,ys,ye,xs,xe,dataset,scaled=False,reshape=False,step=5)
   print(X.shape)
+  #save data for faster load_dataset
+  np.save('./data/VAE/input/topo.npy',topo)
+  #for i,c in enumerate(caseList):
+  #    np.save('./data/VAE/input/input.%s.npy'%c,X[:,i,:,:,:])
   #scale
   #nt,ncase,nvar,ny,nx=X.shape
   #scaler=StandardScaler()

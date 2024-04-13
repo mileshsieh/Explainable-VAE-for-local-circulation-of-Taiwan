@@ -69,6 +69,6 @@ if __name__=='__main__':
   plt.suptitle('Prescribed Synoptic Near-Surface Winds in Selected Cases',fontsize=30)
   plt.annotate('(a)', xy=(0.13, 0.85), xytext=(0.13, 0.85),xycoords='figure fraction',fontsize=20)
   plt.annotate('(b)', xy=(0.55, 0.85), xytext=(0.55, 0.85),xycoords='figure fraction',fontsize=20)
-  plt.savefig('./figures/fig2_IC_distribution.png',dpi=300)
+  plt.savefig('./figures/fig2_IC_distribution.jpg',format='jpg',dpi=300)
 
 

@@ -139,5 +139,5 @@ if __name__=='__main__':
   plt.annotate('(a)', xy=(0.05, 0.87), xytext=(0.05, 0.87),xycoords='figure fraction',fontsize=40)
   plt.annotate('(b)', xy=(0.41, 0.87), xytext=(0.41, 0.87),xycoords='figure fraction',fontsize=40)
 
-  plt.savefig('figures/fig8_physical_generation.png',dpi=300)
+  plt.savefig('figures/fig8_physical_generation.jpg',format='jpg',dpi=300)
 

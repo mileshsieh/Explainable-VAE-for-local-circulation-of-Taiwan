@@ -20,7 +20,7 @@ if __name__=='__main__':
   thd=11.71
   seed=3
  
-  suffix={'VAE':'vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd)),
+  suffix={'VAE':'vae64x64_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd)),
           'PCA':'PCA.2pcs',
           }
   mList=['PCA','VAE']
@@ -73,4 +73,4 @@ if __name__=='__main__':
   ax.legend(loc='upper right',fontsize=15)
   ax.set_ylim(0, 3.2)
 
-  plt.savefig('./figures/fig4_reconstruction_errors.png',dpi=300)
+  plt.savefig('./figures/fig4_reconstruction_errors.jpg',format='jpg',dpi=300)

@@ -40,7 +40,7 @@ if __name__=='__main__':
   thd=11.71
   seed=3
  
-  suffix={'VAE':'vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd)),
+  suffix={'VAE':'vae64x64_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd)),
           'PCA':'PCA.2pcs',
           }
   #load data
@@ -104,6 +104,6 @@ if __name__=='__main__':
   cbar=plt.colorbar(strm2.lines,cax=ax_cb,extend='max')
   cbar.set_label('Wind Speed (m/s)',fontsize=30)
   plt.suptitle('Intercomparison of reconstructed local circulations using PCA/VAE',fontsize=35)
-  plt.savefig('./figures/fig5_reconstruction_samples.png',dpi=300)
+  plt.savefig('./figures/fig5_reconstruction_samples.jpg',format='jpg',dpi=300)
   
   

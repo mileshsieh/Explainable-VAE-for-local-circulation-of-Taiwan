@@ -37,7 +37,7 @@ if __name__=='__main__':
   #load data
   dataset='ctrl'
   #load data
-  topo=np.load('./data/AE/input/topo.npy')
+  topo=np.load('./data/VAE/input/topo.npy')
   caseList,X=du.load_dataset(dataset)
   print(X.shape)
 
@@ -46,8 +46,8 @@ if __name__=='__main__':
   X=(X/thd).reshape(nt*ncase,nvar*ny*nx)
 
   #get the indices of test dataset
-  testing_indices=np.load('./data/AE/input/testing_indices.npy')
-  training_indices=np.load('./data/AE/input/training_indices.npy')
+  testing_indices=np.load('./data/VAE/input/testing_indices.npy')
+  training_indices=np.load('./data/VAE/input/training_indices.npy')
 
   idx_test_cases,idx_test_tt=np.divmod(testing_indices,nt)
   idx_train_cases,idx_train_tt=np.divmod(training_indices,nt)
@@ -79,7 +79,7 @@ if __name__=='__main__':
   #plot modes
   #modes=np.array([scaler.inverse_transform(pca.components_[k,:]).reshape(nvar,ny,nx) for k in range(npc)])
   modes=np.array([pca.components_[k,:].reshape(nvar,ny,nx) for k in range(npc)])
-  np.save('./data/AE/PCA/modes.%d.npy'%npc,modes)
+  np.save('./data/VAE/PCA/modes.%d.npy'%npc,modes)
   
   for k in range(npc):
     print('plot PC%d'%(k+1))
@@ -100,11 +100,11 @@ if __name__=='__main__':
   #reconstruction
   recon=coef.dot(pca.components_).reshape(nt,ncase,nvar,ny,nx)*thd
   for icase,case in enumerate(caseList):
-    np.save('./data/AE/reconstruction/recon.%s.PCA.%dpcs.npy'%(case,npc),recon[:,icase,:,:])
+    np.save('./data/VAE/reconstruction/recon.%s.PCA.%dpcs.npy'%(case,npc),recon[:,icase,:,:])
 
   coef=np.swapaxes(coef.reshape(nt,ncase,npc),0,1)
   print(coef.shape)
-  np.save('./data/AE/PCA/coef.%d.npy'%npc,coef)
+  np.save('./data/VAE/PCA/coef.%d.npy'%npc,coef)
 
   #scatterplot of PCA coef
   #get synoptic factors

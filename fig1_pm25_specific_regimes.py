@@ -228,4 +228,4 @@ if __name__=='__main__':
     plt.annotate('(c)', xy=(0.7, 0.9), xytext=(0.7, 0.93),xycoords='figure fraction',fontsize=30)
  
     
-    plt.savefig('./figures/fig1_WD125_WD150_enhancement_index.png',dpi=300)
+    plt.savefig('./figures/fig1_WD125_WD150_enhancement_index.jpg',format='jpg',dpi=300)

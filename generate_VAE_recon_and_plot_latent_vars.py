@@ -4,7 +4,7 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from train_VAE_uv2uv_61x61 import variationalAutoEncoder,Encoder,Decoder,Reshape
+from train_VAE_uv2uv_64x64 import variationalAutoEncoder,Encoder,Decoder,Reshape
 import glob,random,os
 import dataUtils as du
 from itertools import permutations
@@ -25,7 +25,7 @@ if __name__=='__main__':
 
   seed=3
   #for write out
-  sf='vae61x61_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd))
+  sf='vae64x64_ldim%d_b%.4f_%s_t%dto%d_seed%d_norm%d'%(latent_dim,beta,dataset,du.ts,du.te,seed,int(thd))
   device = torch.device('cpu')
 
   # Load model

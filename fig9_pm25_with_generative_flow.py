@@ -106,4 +106,4 @@ if __name__=='__main__':
     #plt.annotate('(c)', xy=(0.7, 0.9), xytext=(0.63, 0.9),xycoords='figure fraction',fontsize=25)
  
 
-    plt.savefig('figures/fig9_pm25_with_flow.png',dpi=300)
+    plt.savefig('figures/fig9_pm25_with_flow.jpg',format='jpg',dpi=300)
