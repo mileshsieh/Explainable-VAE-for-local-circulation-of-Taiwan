@@ -14,8 +14,8 @@ pltCfg={'WD':['Wind Direction','Wind Direction($^{\circ}$)'],
 
 def plot_mu(plt,ax,lbl,var,mu,testing,training,limit_value,vmin,vmax,cmap):    
     for tt in range(nt):
-      plt.scatter(mu[train_cases[tt],tt,0],mu[train_cases[tt],tt,1],c=var[train_cases[tt]],marker='o',vmin=vmin,vmax=vmax,cmap=cmap)
-      plt.scatter(mu[test_cases[tt],tt,0],mu[test_cases[tt],tt,1],c=var[test_cases[tt]],s=50,marker='x',vmin=vmin,vmax=vmax,cmap=cmap)
+      plt.scatter(mu[train_cases[tt],tt,0],mu[train_cases[tt],tt,1],c=var[train_cases[tt]],s=8,marker='.',vmin=vmin,vmax=vmax,cmap=cmap)
+      plt.scatter(mu[test_cases[tt],tt,0],mu[test_cases[tt],tt,1],c=var[test_cases[tt]],s=13,marker='x',vmin=vmin,vmax=vmax,cmap=cmap)
     cb=plt.colorbar(extend='both')
     cb.set_label(pltCfg[lbl][1],fontsize=14)
     plt.grid(True)
