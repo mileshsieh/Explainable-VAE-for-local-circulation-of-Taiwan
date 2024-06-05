@@ -12,21 +12,24 @@ pltCfg={'WD':['Wind Direction','Wind Direction($^{\circ}$)'],
         'WS':['Wind Speed','Wind Speed(m/s)'],
        }
 
-def plot_mu(plt,ax,lbl,var,mu,testing,training,limit_value,vmin,vmax,cmap):    
+def plot_mu(plt,ax,lbl,var,mu,dataset,training,limit_value,vmin,vmax,cmap):    
+    nt=mu.shape[1]
     for tt in range(nt):
-      plt.scatter(mu[train_cases[tt],tt,0],mu[train_cases[tt],tt,1],c=var[train_cases[tt]],s=8,marker='.',vmin=vmin,vmax=vmax,cmap=cmap)
-      plt.scatter(mu[test_cases[tt],tt,0],mu[test_cases[tt],tt,1],c=var[test_cases[tt]],s=13,marker='x',vmin=vmin,vmax=vmax,cmap=cmap)
-    cb=plt.colorbar(extend='both')
-    cb.set_label(pltCfg[lbl][1],fontsize=14)
+      if dataset=='Training':
+        cs=plt.scatter(mu[train_cases[tt],tt,0],mu[train_cases[tt],tt,1],c=var[train_cases[tt]],marker='.',vmin=vmin,vmax=vmax,cmap=cmap)
+      else:
+        cs=plt.scatter(mu[test_cases[tt],tt,0],mu[test_cases[tt],tt,1],c=var[test_cases[tt]],s=50,marker='x',vmin=vmin,vmax=vmax,cmap=cmap)
+    #cb=plt.colorbar(extend='both')
+    #cb.set_label(pltCfg[lbl][1],fontsize=14)
     plt.grid(True)
-    plt.title(pltCfg[lbl][0],fontsize=20)
+    plt.title('%s(%s)'%(pltCfg[lbl][0],dataset),fontsize=16)
     plt.xlim(-limit_value,limit_value)
     plt.ylim(-limit_value,limit_value)
     plt.xticks(np.arange(-limit_value,limit_value+1))
     plt.yticks(np.arange(-limit_value,limit_value+1))
     plt.xlabel('$Z_0$',fontsize=14)
     plt.ylabel('$Z_1$',fontsize=14)
-    return plt,ax
+    return cs
 
 if __name__=='__main__':
   num_input_channels=2
@@ -71,14 +74,27 @@ if __name__=='__main__':
         }
 
   limit_value=2
-  fig=plt.figure(figsize=(14,6))
-  ax1=plt.subplot(121)
-  plt,ax1=plot_mu(plt,ax1,'WD',wd,latent_var,test_cases,train_cases,limit_value,60,180,'Accent')
-  ax2=plt.subplot(122)
-  plt,ax1=plot_mu(plt,ax1,'WS',ws,latent_var,test_cases,train_cases,limit_value,2,10,'Dark2')
-  fig.subplots_adjust(top=0.85)
+  fig=plt.figure(figsize=(14,14))
+  ax1=plt.subplot(221)
+  cs1=plot_mu(plt,ax1,'WD',wd,latent_var,'Training',train_cases,limit_value,60,180,'Accent')
+  ax2=plt.subplot(222)
+  cs2=plot_mu(plt,ax2,'WS',ws,latent_var,'Training',train_cases,limit_value,2,10,'Dark2')
+  ax3=plt.subplot(223)
+  cs1=plot_mu(plt,ax3,'WD',wd,latent_var,'Testing',test_cases,limit_value,60,180,'Accent')
+  ax4=plt.subplot(224)
+  cs2=plot_mu(plt,ax4,'WS',ws,latent_var,'Testing',test_cases,limit_value,2,10,'Dark2')
+  fig.subplots_adjust(bottom=0.2)
+  cax_wd=fig.add_axes([0.13, 0.1, 0.35, 0.03])
+  cbar_wd=plt.colorbar(cs1, cax=cax_wd, orientation='horizontal',extend='both')
+  cbar_wd.set_label('Wind Direction($^{\circ}$)',fontsize=14)
+  cax_ws=fig.add_axes([0.55, 0.1, 0.35, 0.03])
+  cbar_ws=plt.colorbar(cs2, cax=cax_ws, orientation='horizontal',extend='both')
+  cbar_ws.set_label('Wind Speed(m/s)',fontsize=14)
+
   plt.suptitle('Latent Space Color-coded by Synoptic Flow Regimes',fontsize=25)
   plt.annotate('(a)', xy=(0.05, 0.91), xytext=(0.05, 0.87),xycoords='figure fraction',fontsize=20)
   plt.annotate('(b)', xy=(0.05, 0.91), xytext=(0.49, 0.87),xycoords='figure fraction',fontsize=20)
+  plt.annotate('(c)', xy=(0.05, 0.91), xytext=(0.05, 0.52),xycoords='figure fraction',fontsize=20)
+  plt.annotate('(d)', xy=(0.05, 0.91), xytext=(0.49, 0.52),xycoords='figure fraction',fontsize=20)
   plt.savefig('figures/fig7_physical_latent_space.png',dpi=300)
 
