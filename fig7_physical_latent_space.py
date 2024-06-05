@@ -22,7 +22,7 @@ def plot_mu(plt,ax,lbl,var,mu,dataset,training,limit_value,vmin,vmax,cmap):
     #cb=plt.colorbar(extend='both')
     #cb.set_label(pltCfg[lbl][1],fontsize=14)
     plt.grid(True)
-    plt.title('%s(%s)'%(pltCfg[lbl][0],dataset),fontsize=16)
+    plt.title('%s (%s Dataset)'%(pltCfg[lbl][0],dataset),fontsize=16)
     plt.xlim(-limit_value,limit_value)
     plt.ylim(-limit_value,limit_value)
     plt.xticks(np.arange(-limit_value,limit_value+1))
@@ -96,5 +96,5 @@ if __name__=='__main__':
   plt.annotate('(b)', xy=(0.05, 0.91), xytext=(0.49, 0.87),xycoords='figure fraction',fontsize=20)
   plt.annotate('(c)', xy=(0.05, 0.91), xytext=(0.05, 0.52),xycoords='figure fraction',fontsize=20)
   plt.annotate('(d)', xy=(0.05, 0.91), xytext=(0.49, 0.52),xycoords='figure fraction',fontsize=20)
-  plt.savefig('figures/fig7_physical_latent_space.png',dpi=300)
+  plt.savefig('figures/fig7_physical_latent_space.jpg',dpi=300)
 
